@@ -1,0 +1,117 @@
+/* Global Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #656565; /* Background color */
+  color: white; /* Text color */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+/* Button Styles */
+button {
+  background-color: #33888e; /* Bright button color */
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 10px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #276e74; /* Darker shade of the button color on hover */
+}
+
+/* Flex Container */
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  padding: 20px;
+}
+
+/* Input Styles */
+input[type="email"], input[type="password"], input[type="file"] {
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  margin: 10px 0;
+  width: 250px;
+}
+
+/* Form Container */
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  background-color: #404040;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+/* Header Styling */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #33888e;
+  padding: 10px 20px;
+  width: 100%;
+}
+
+.header .logo {
+  font-size: 1.5rem;
+  color: white;
+}
+
+.header nav ul {
+  display: flex;
+  list-style: none;
+  gap: 20px;
+}
+
+.header nav ul li {
+  font-size: 1rem;
+}
+
+.header nav ul li a {
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.header nav ul li a:hover {
+  color: #276e74;
+}
+
+/* File List Styling */
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  padding: 20px;
+}
+
+.file-item {
+  background-color: #404040;
+  padding: 10px;
+  border-radius: 5px;
+}
