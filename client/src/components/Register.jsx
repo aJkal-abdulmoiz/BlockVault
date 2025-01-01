@@ -14,19 +14,26 @@ const Register = () => {
     e.preventDefault();
     setError('');
     setSuccess('');
+
     if (password !== confirmPassword) {
       setError("Passwords don't match");
       return;
     }
+
     try {
-      await axios.post('http://localhost:5000/api/auth/register', {
+      const response = await axios.post('http://localhost:5000/api/auth/register', {
         email,
         password,
       });
-      setSuccess('Registration successful. Redirecting to login...');
+      setSuccess(response.data.message || 'Registration successful. Redirecting to login...');
       setTimeout(() => navigate('/login'), 3000);
     } catch (err) {
-      setError('Registration failed. Please try again.');
+      if (err.response && err.response.data) {
+        const backendErrors = err.response.data.errors || [{ msg: err.response.data.message }];
+        setError(backendErrors.map((err) => err.msg).join(' | '));
+      } else {
+        setError('Registration failed. Please try again.');
+      }
     }
   };
 

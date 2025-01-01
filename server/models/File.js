@@ -1,9 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const fileSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  ipfsHash: { type: String, required: true },
-  blockchainTxHash: { type: String }
+const FileSchema = new mongoose.Schema({
+  cid: { type: String, required: true },
+  fileName: { type: String, required: true },
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
-module.exports = mongoose.model('File', fileSchema);
+const File = mongoose.model("File", FileSchema);
+
+module.exports = File;

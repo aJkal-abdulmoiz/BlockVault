@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
+import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
 import FileUpload from './components/FileUpload';
 import Login from './components/Login';
@@ -10,7 +10,7 @@ import "./App.css";
 function App() {
   return (
     <Router>
-      <Header />
+      <Navbar />
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/upload" element={<FileUpload />} />

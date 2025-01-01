@@ -1,51 +1,49 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { connectToBlockchain, getContractInstance } from "../utils/blockchain"; // Import blockchain functions
-import contractABI from "../contracts/FileUpload.sol/FileUpload.json";
-
+import React, { useState } from 'react';
+import axios from 'axios';
 
 const FileUpload = () => {
   const [file, setFile] = useState(null);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const contractAddress = "0xYourSmartContractAddress"; // Your contract address
 
   const handleFileUpload = async (e) => {
     e.preventDefault();
-    setMessage("");
+    setMessage('');
     setLoading(true);
 
-    if (!file) {
-      setMessage("Please select a file.");
+    // Get the wallet address from localStorage
+    const walletAddress = localStorage.getItem('walletAddress');
+    console.log(walletAddress)
+    
+    if (!file || !walletAddress) {
+      setMessage('Please select a file and ensure wallet address is available.');
       setLoading(false);
       return;
     }
 
+    const formData = new FormData();
+    formData.append('file', file);  // Append file to FormData
+    formData.append('walletAddress', walletAddress);  // Append wallet address from localStorage to FormData
+
     try {
-      // Connect to blockchain (e.g., MetaMask)
-      const { signer } = await connectToBlockchain();
-      if (!signer) throw new Error("Blockchain connection failed.");
-
-      // Get contract instance
-      const contract = getContractInstance(contractAddress, contractABI, signer);
-
-      // Upload file to IPFS (assumed this is a separate function in your utils/ipfs)
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const res = await axios.post("http://localhost:5000/upload", formData, {
+      // Step 1: Upload file to backend (which will handle Pinata upload)
+      const res = await axios.post('http://localhost:5000/api/files/upload', formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          'Content-Type': 'multipart/form-data',  // Ensure multipart form-data for file upload
+          Authorization: `Bearer ${localStorage.getItem('token')}`,  // Authorization token
         },
       });
 
-      // Assuming the contract has a storeFile function to store file metadata on-chain
-      const tx = await contract.storeFile(file.name, res.data.file.ipfsHash); 
-      await tx.wait(); // Wait for the transaction to be mined
+      // If transaction was successful
+      if (res.data.transactionHash) {
+        console.log('Transaction successful');
+        console.log('Transaction Hash:', res.data.transactionHash);
+        console.log('Block Number:', res.data.blockNumber);
 
-      setMessage(`File uploaded successfully! Transaction Hash: ${tx.hash}`);
+        alert(`File uploaded successfully!\nTransaction Hash: ${res.data.transactionHash}\nBlock Number: ${res.data.blockNumber}`);
+      }
+
+      setMessage(`File uploaded successfully! CID: ${res.data.cid}`);
     } catch (err) {
       setMessage(`Error: ${err.message}`);
     } finally {
@@ -59,14 +57,14 @@ const FileUpload = () => {
       <form onSubmit={handleFileUpload}>
         <input
           type="file"
-          onChange={(e) => setFile(e.target.files[0])}
+          onChange={(e) => setFile(e.target.files[0])}  // Handle file change
           required
         />
         <button type="submit" disabled={loading}>
-          {loading ? "Uploading..." : "Upload to Blockchain"}
+          {loading ? 'Uploading...' : 'Upload File'}
         </button>
       </form>
-      {message && <p>{message}</p>}
+      {message && <p>{message}</p>}  {/* Display messages */}
     </div>
   );
 };

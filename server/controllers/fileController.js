@@ -1,35 +1,61 @@
-const { uploadFileToIPFS } = require('../utils/ipfs');
-const { uploadFileToBlockchain } = require('../utils/blockchain'); // Using Ethers.js
-const File = require('../models/File'); // MongoDB model for file metadata
+const File = require('../models/File');
+const pinata = require('../utils/pinata');  // Assuming you have a pinata utility to handle file uploads to Pinata
+const { ethers } = require('ethers');
+const path = require('path');
+const FileRegistryABI = require(path.join(__dirname, '../utils/ABI.json'));
 
-const uploadFile = async (req, res) => {
+// Upload File to Pinata and Smart Contract
+exports.uploadFile = async (req, res) => {
   try {
-    const file = req.file; // Assuming file is sent via multipart form data
-    const ipfsHash = await uploadFileToIPFS(file);
-    
-    // Store file metadata in MongoDB
+    const { fileName, file, walletAddress } = req.body; // walletAddress is passed from frontend
+
+    // Ensure the wallet address is valid
+    if (!ethers.utils.isAddress(walletAddress)) {
+      return res.status(400).send("Invalid wallet address");
+    }
+
+    // Upload file to Pinata and get CID
+    const cid = await pinata.uploadToPinata(file);
+
+    // Save the file metadata in MongoDB
     const newFile = new File({
-      name: file.originalname,
-      ipfsHash: ipfsHash
+      fileName,
+      cid,
+      owner: req.user.id, // Assuming user is authenticated
     });
 
     await newFile.save();
 
-    // Upload file to the blockchain
-    const blockchainTxHash = await uploadFileToBlockchain(ipfsHash);
+    // Setup provider and signer using wallet address
+    const provider = new ethers.providers.JsonRpcProvider(process.env.BLOCKCHAIN_RPC_URL);
+    const signer = new ethers.Wallet(process.env.CONTRACT_OWNER_PRIVATE_KEY, provider);  // Using the private key from .env
+    const contract = new ethers.Contract(process.env.CONTRACT_ADDRESS, FileRegistryABI, signer);
 
-    // Save blockchain transaction hash in MongoDB
-    newFile.blockchainTxHash = blockchainTxHash;
-    await newFile.save();
+    // Upload file CID to Smart Contract
+    const tx = await contract.uploadFile(cid, fileName, { from: walletAddress });
+    const receipt = await tx.wait(); // Wait for the transaction to be mined
 
-    res.status(200).json({
-      message: "File uploaded successfully!",
-      file: newFile
+    // Return success response
+    res.json({ 
+      msg: 'File uploaded successfully', 
+      file: newFile,
+      transactionHash: receipt.transactionHash,
+      blockNumber: receipt.blockNumber
     });
-  } catch (error) {
-    console.error("Error uploading file:", error);
-    res.status(500).json({ message: "File upload failed" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
   }
 };
 
-module.exports = { uploadFile };
+
+getFiles = async (req, res) => {
+  try {
+    const files = await File.find({ owner: req.user.id });
+    res.json({ files });
+  } catch (err) {
+    res.status(500).send('Server Error');
+  }
+};
+
+module.exports = { uploadFile , getFiles }

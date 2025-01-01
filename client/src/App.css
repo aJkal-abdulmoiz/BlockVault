@@ -6,7 +6,7 @@ body {
   background-color: #656565; /* Background color */
   color: white; /* Text color */
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   height: 100vh;
   flex-direction: column;
