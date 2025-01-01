@@ -1,30 +1,39 @@
-// utils/pinata.js
+const fs = require('fs');
 const axios = require('axios');
 const FormData = require('form-data');
-const fs = require('fs');
-const path = require('path');
 
-const PINATA_API_KEY = process.env.PINATA_API_KEY;
-const PINATA_API_SECRET = process.env.PINATA_API_SECRET;
+const pinataApiKey = process.env.PINATA_API_KEY;
+const pinataSecretApiKey = process.env.PINATA_SECRET_API_KEY;
 
-const uploadToPinata = async (file) => {
+exports.uploadToPinata = async (filePath) => {
+  try {
     const form = new FormData();
-    form.append('file', fs.createReadStream(file));
+    const fileStream = fs.createReadStream(filePath);
 
-    try {
-        const response = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', form, {
-            headers: {
-                ...form.getHeaders(),
-                pinata_api_key: PINATA_API_KEY,
-                pinata_secret_api_key: PINATA_API_SECRET,
-            },
-        });
+    // Get the file size for the Upload-Length header
+    const stats = fs.statSync(filePath);
+    const fileSizeInBytes = stats.size;
 
-        return response.data.IpfsHash; // CID
-    } catch (err) {
-        console.error('Pinata upload failed:', err);
-        throw new Error('Failed to upload file to Pinata');
-    }
+    // Append the file to the form data
+    form.append('file', fileStream);
+
+    // Set up headers for the request
+    const headers = {
+      'Authorization': `Bearer ${process.env.PINATA_JWT}`, // Pinata JWT Token
+      'Upload-Length': fileSizeInBytes, // Add the Upload-Length header
+      ...form.getHeaders(), // Automatically include the necessary FormData headers
+    };
+
+    // Make the request to Pinata API using axios
+    const response = await axios.post('https://uploads.pinata.cloud/v3/files', form, { headers });
+
+    console.log(response.data); // Check the full response structure
+    const cid = response.data?.cid || response.data?.data?.cid;
+    console.log(cid); // Log the CID
+    return cid;
+    
+  } catch (error) {
+    console.error('Error uploading to Pinata:', error);
+    throw new Error('Pinata upload failed');
+  }
 };
-
-module.exports = { uploadToPinata };

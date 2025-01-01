@@ -17,21 +17,43 @@
 // };
 
 // module.exports = auth;
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
 
-const auth = (req, res, next) => {
-  const token = req.header("Authorization");
+// const auth = (req, res, next) => {
+//   const token = req.header("Authorization");
 
-  if (!token) return res.status(401).send("Access denied. No token provided.");
+//   if (!token) return res.status(401).send("Access denied. No token provided.");
+
+//   try {
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//     req.user = decoded;
+//     next();
+//   } catch (err) {
+//     res.status(400).send("Invalid token.");
+//   }
+// };
+
+// module.exports = auth;
+
+const jwt = require('jsonwebtoken');
+
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ message: 'No token provided' });
+  }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    req.user = { id: decoded.userId };
     next();
   } catch (err) {
-    res.status(400).send("Invalid token.");
+    res.status(403).json({ message: 'Invalid token' });
   }
 };
 
-module.exports = auth;
+module.exports = authenticateToken;
+
 

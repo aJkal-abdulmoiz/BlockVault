@@ -6,7 +6,6 @@ const FileList = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch the list of files from the backend
     const fetchFiles = async () => {
       try {
         const res = await axios.get('http://localhost:5000/api/files/getfiles', {
@@ -26,24 +25,31 @@ const FileList = () => {
   }, []);
 
   return (
-    <div className="container">
+    <div className="file-list-container">
       <h1>Uploaded Files</h1>
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <ul>
-          {files.map((file) => (
-            <li key={file._id}>
-              <a
-                href={`https://gateway.pinata.cloud/ipfs/${file.cid}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {file.fileName}
-              </a>
-            </li>
-          ))}
-        </ul>
+        <div className="file-cards">
+          {files.length > 0 ? (
+            files.map((file) => (
+              <div className="file-card" key={file._id}>
+                <h2>Owner: {file.owner || 'Unknown'}</h2>
+                <p>File Name: {file.fileName || 'Untitled'}</p>
+                <a
+                  href={`https://olive-active-aardvark-146.mypinata.cloud/files/${file.cid}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="file-link"
+                >
+                  View File
+                </a>
+              </div>
+            ))
+          ) : (
+            <p>No files uploaded yet.</p>
+          )}
+        </div>
       )}
     </div>
   );

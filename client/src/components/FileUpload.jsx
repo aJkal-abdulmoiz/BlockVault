@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { uploadFileToSmartContract } from '../utils/ContractFunctions';
 
 const FileUpload = () => {
   const [file, setFile] = useState(null);
@@ -13,8 +14,6 @@ const FileUpload = () => {
 
     // Get the wallet address from localStorage
     const walletAddress = localStorage.getItem('walletAddress');
-    console.log(walletAddress)
-    
     if (!file || !walletAddress) {
       setMessage('Please select a file and ensure wallet address is available.');
       setLoading(false);
@@ -22,28 +21,34 @@ const FileUpload = () => {
     }
 
     const formData = new FormData();
-    formData.append('file', file);  // Append file to FormData
-    formData.append('walletAddress', walletAddress);  // Append wallet address from localStorage to FormData
+    formData.append('file', file);
+    formData.append('fileName', file.name);
+    formData.append('walletAddress', walletAddress);
 
     try {
-      // Step 1: Upload file to backend (which will handle Pinata upload)
-      const res = await axios.post('http://localhost:5000/api/files/upload', formData, {
+      // Step 1: Upload the file to Pinata through the backend and save record to MONGODB for platform proof
+      const response = await axios.post('http://localhost:5000/api/files/upload', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',  // Ensure multipart form-data for file upload
-          Authorization: `Bearer ${localStorage.getItem('token')}`,  // Authorization token
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
 
-      // If transaction was successful
-      if (res.data.transactionHash) {
-        console.log('Transaction successful');
-        console.log('Transaction Hash:', res.data.transactionHash);
-        console.log('Block Number:', res.data.blockNumber);
+      if (response.data) {
+        const { cid } = response.data;
+        console.log(`File uploaded to Pinata. CID: ${cid}`);
 
-        alert(`File uploaded successfully!\nTransaction Hash: ${res.data.transactionHash}\nBlock Number: ${res.data.blockNumber}`);
+        // Step 2: Upload the file's CID to the smart contract
+        let transaction_info = await uploadFileToSmartContract(cid, file.name);
+        console.log(transaction_info.blockNumber);
+        console.log(transaction_info.transactionHash);
+        
+        
+
+        setMessage(`File uploaded successfully! CID: ${cid}`);
+        alert(`File uploaded successfully!\nCID: ${cid}`);
+      } else {
+        throw new Error('Failed to retrieve CID from the backend response.');
       }
-
-      setMessage(`File uploaded successfully! CID: ${res.data.cid}`);
     } catch (err) {
       setMessage(`Error: ${err.message}`);
     } finally {
@@ -57,14 +62,14 @@ const FileUpload = () => {
       <form onSubmit={handleFileUpload}>
         <input
           type="file"
-          onChange={(e) => setFile(e.target.files[0])}  // Handle file change
+          onChange={(e) => setFile(e.target.files[0])}
           required
         />
         <button type="submit" disabled={loading}>
           {loading ? 'Uploading...' : 'Upload File'}
         </button>
       </form>
-      {message && <p>{message}</p>}  {/* Display messages */}
+      {message && <p>{message}</p>}
     </div>
   );
 };

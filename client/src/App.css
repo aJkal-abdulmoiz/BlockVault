@@ -115,3 +115,52 @@ form {
   padding: 10px;
   border-radius: 5px;
 }
+
+
+.file-list-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+.file-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.file-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 300px;
+  text-align: left;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.file-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.file-link {
+  display: inline-block;
+  margin-top: 10px;
+  color: #000000;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+
+.file-link:hover {
+
+  color: #0dc8c8;
+}

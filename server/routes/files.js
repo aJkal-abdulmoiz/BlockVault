@@ -4,7 +4,7 @@ const router = express.Router();
 const { uploadFile , getFiles} = require('../controllers/fileController');
 const auth = require('../middlewares/auth');
 
-router.post('/upload', auth, uploadFile);
-router.get('/getfiles', auth, getFiles);
+router.post('/upload', uploadFile);
+router.get('/getfiles', getFiles);
 
 module.exports = router;
