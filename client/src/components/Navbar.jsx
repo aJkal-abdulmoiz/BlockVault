@@ -49,6 +49,7 @@ const Navbar = () => {
   // Handle logout for token-based session
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('loggedInuser');
     navigate('/login');
   };
 
@@ -58,13 +59,15 @@ const Navbar = () => {
         <h1>File Management System</h1>
         <nav>
           <ul>
+          {isLoggedIn &&
             <li>
-              <Link to="/">Dashboard</Link>
+              <button><Link to="/">Dashboard</Link></button>
             </li>
+            }
             {isLoggedIn ? (
               <>
                 <li>
-                  <Link to="/upload">Upload</Link>
+                <button><Link to="/upload">Upload</Link></button>
                 </li>
                 <li>
                   <button onClick={handleLogout}>Logout</button>
@@ -73,10 +76,10 @@ const Navbar = () => {
             ) : (
               <>
                 <li>
-                  <Link to="/login">Login</Link>
+                <button><Link to="/login">Login</Link></button>
                 </li>
                 <li>
-                  <Link to="/register">Register</Link>
+                <button><Link to="/register">Register</Link></button>
                 </li>
               </>
             )}

@@ -5,7 +5,7 @@ const { body, validationResult } = require('express-validator');
 
 // Register
 const register = async (req, res) => {
-  const { email, password } = req.body;
+  const { username , email, password } = req.body;
 
   // Validation
   await body('email').isEmail().withMessage('Invalid email format').run(req);
@@ -28,8 +28,13 @@ const register = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
+    const existingUserName = await User.findOne({ username });
+    if (existingUserName) {
+      return res.status(400).json({ message: 'Username already exists' });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ email, password: hashedPassword });
+    const newUser = new User({ username, email, password: hashedPassword });
 
     await newUser.save();
 
@@ -62,6 +67,7 @@ const login = async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
+    const username = user.username
     if (!user) {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
@@ -72,7 +78,7 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.status(200).json({ message: 'Login successful', token });
+    res.status(200).json({ message: 'Login successful', token,username });
   } catch (err) {
     console.error('Error during login:', err);
     res.status(500).json({ message: 'An unexpected server error occurred' });

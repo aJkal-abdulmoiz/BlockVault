@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { uploadFileToSmartContract } from '../utils/ContractFunctions';
+const FormData = require('form-data')
 
 const FileUpload = () => {
   const [file, setFile] = useState(null);
@@ -14,6 +15,7 @@ const FileUpload = () => {
 
     // Get the wallet address from localStorage
     const walletAddress = localStorage.getItem('walletAddress');
+    const loggedInuser = localStorage.getItem('loggedInuser');
     if (!file || !walletAddress) {
       setMessage('Please select a file and ensure wallet address is available.');
       setLoading(false);
@@ -25,12 +27,23 @@ const FileUpload = () => {
     formData.append('fileName', file.name);
     formData.append('walletAddress', walletAddress);
 
+    // Prepare the body object
+    const body = {
+      file: formData,
+      fileName: file.name,
+      walletAddress: walletAddress,
+      loggedInuser: loggedInuser
+    };
+
     try {
       // Step 1: Upload the file to Pinata through the backend and save record to MONGODB for platform proof
-      const response = await axios.post('http://localhost:5000/api/files/upload', formData, {
+      const response = await axios({
+        method: 'post',
+        url: 'http://localhost:5000/api/files/upload',
+        data: body,
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Include token in headers
+        }
       });
 
       if (response.data) {
@@ -75,3 +88,7 @@ const FileUpload = () => {
 };
 
 export default FileUpload;
+
+
+
+

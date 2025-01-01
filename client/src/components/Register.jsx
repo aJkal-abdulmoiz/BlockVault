@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
+  const [username, Setusername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -22,9 +23,11 @@ const Register = () => {
 
     try {
       const response = await axios.post('http://localhost:5000/api/auth/register', {
+        username,
         email,
         password,
       });
+      localStorage.setItem('loggedInuser', username);
       setSuccess(response.data.message || 'Registration successful. Redirecting to login...');
       setTimeout(() => navigate('/login'), 3000);
     } catch (err) {
@@ -43,6 +46,15 @@ const Register = () => {
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {success && <p style={{ color: 'green' }}>{success}</p>}
       <form onSubmit={handleRegister}>
+      <div>
+          <label>Username</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => Setusername(e.target.value)}
+            required
+          />
+        </div>
         <div>
           <label>Email</label>
           <input

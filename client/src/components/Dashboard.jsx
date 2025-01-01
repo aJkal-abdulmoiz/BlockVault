@@ -10,16 +10,23 @@ const Dashboard = () => {
   const [selectedFileId, setSelectedFileId] = useState(null);  // Track selected file ID for access control
   const [accessAddress, setAccessAddress] = useState('');       // Track wallet address for granting/revoking access
 
+
+  const username = localStorage.getItem('loggedInuser');
+  
   // Fetch files from the backend
   const fetchFiles = async () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.get('http://localhost:5000/api/files/getfiles', {
+      const res = await axios.get('http://localhost:5000/api/files/getfiles', 
+      
+      {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`, // JWT token for authentication
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // JWT Token
+          'x-username': username,
         },
-      });
+      }
+    );
       setFiles(res.data.files);
     } catch (err) {
       const serverError = err.response?.data?.message || 'Error fetching files';

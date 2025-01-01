@@ -2,17 +2,19 @@ const fs = require('fs');
 const path = require('path');
 const { uploadToPinata } = require('../utils/pinata');
 const File = require('../models/File');
-const { ethers } = require('ethers');
 
 // Upload file to Pinata and Smart Contract
 exports.uploadFile = async (req, res) => {
 
   try {
     
-    const { walletAddress ,fileName ,file } = req.body  // Extract walletAddress from the form data
-
+    
+    const { walletAddress ,fileName ,file,loggedInuser } = req.body  // Extract walletAddress from the form data
+    console.log(walletAddress,fileName,req.user_id)
     // Handle the file upload and storage (e.g., upload to Pinata)
     const unique_filename = `${walletAddress}_${fileName}`;
+
+    const unique_username = `${loggedInuser}`;
     
     // // Ensure the wallet address is valid
     // if (!ethers.utils.isAddress(walletAddress)) {
@@ -32,7 +34,7 @@ exports.uploadFile = async (req, res) => {
     const newFile = new File({
       fileName: unique_filename,
       cid: cid,
-      owner: "Abdulmoiz", // Assuming user is authenticated
+      owner: unique_username, // Assuming user is authenticated
     });
 
     await newFile.save();
@@ -52,7 +54,11 @@ exports.uploadFile = async (req, res) => {
 // Get files uploaded by user
 exports.getFiles = async (req, res) => {
   try {
-    const files = await File.find({ owner: 'Abdulmoiz' });
+    const username = req.headers['x-username'];
+    console.log(`fetching files for ${username}`);
+    const files = await File.find({ owner: username });
+    
+    
     res.json({ files });
   } catch (err) {
     res.status(500).send('Server Error');
