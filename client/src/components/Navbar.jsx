@@ -56,7 +56,7 @@ const Navbar = () => {
   return (
     <header className="header">
       <div className="container">
-        <h1>File Management System</h1>
+        <h1>BlockVault File Sharing</h1>
         <nav>
           <ul>
           {isLoggedIn &&
