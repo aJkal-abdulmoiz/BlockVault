@@ -1,191 +1,338 @@
-/* Global Styles */
+/* Global Styles with Modern Typography */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+/* We start with a dark background that uses a subtle gradient to create depth */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #656565; /* Background color */
-  color: white; /* Text color */
-  /* display: flex;
-  justify-content: flex-start;
-  align-items: center; */
-  height: 100vh;
-  flex-direction: column;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: #ffffff;
+  min-height: 100vh;
+  line-height: 1.6;
 }
 
-h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-/* Button Styles */
-button {
-  background-color: #33888e; /* Bright button color */
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin: 10px;
-  transition: background-color 0.3s ease;
-}
-.button{
-  background-color: #33888e; /* Bright button color */
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin: 10px;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #276e74; /* Darker shade of the button color on hover */
-}
-
-/* Flex Container */
+/* The container now uses a slightly lighter background to create contrast with the body */
 .container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
   width: 100%;
-  padding: 20px;
+  padding: 32px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 24px;
+  margin: 20px auto;
+  max-width: 1200px;
 }
 
-/* Input Styles */
-input[type="email"], input[type="password"], input[type="file"] {
-  padding: 10px;
-  border-radius: 5px;
-  border: none;
-  margin: 10px 0;
-  width: 250px;
-}
-
-/* Form Container */
-form {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  background-color: #404040;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-/* Header Styling */
+/* The header uses a distinct dark shade with transparency for the glass effect */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #33888e;
-  padding: 10px 20px;
-  width: 100%;
+  background: rgba(40, 40, 40, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 16px 32px;
+  margin: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
+/* The logo now uses a more vibrant gradient that stands out against the dark theme */
 .header .logo {
-  font-size: 1.5rem;
-  color: white;
+  font-size: 1.8rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #33888e 0%, #a8edea 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .header nav ul {
   display: flex;
   list-style: none;
-  gap: 20px;
+  gap: 32px;
+  margin: 0;
+  padding: 0;
 }
 
-.header nav ul li {
-  font-size: 1rem;
-}
-
+/* Navigation links are styled with a subtle hover effect */
 .header nav ul li a {
-  color: white;
+  color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
-  transition: color 0.3s ease;
+  font-weight: 500;
+  position: relative;
+  padding: 8px 0;
 }
 
-.header nav ul li a:hover {
-  color: #276e74;
+.header nav ul li a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(135deg, #33888e 0%, #a8edea 100%);
+  transition: width 0.3s ease;
 }
 
-/* File List Styling */
-.file-list {
+.header nav ul li a:hover::after {
+  width: 100%;
+}
+
+/* Buttons now use a more vibrant gradient that complements the dark theme */
+button, .button {
+  background: linear-gradient(135deg, #33888e 0%, #276e74 100%);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(51, 136, 142, 0.2);
+}
+
+button:hover, .button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(51, 136, 142, 0.3);
+  background: linear-gradient(135deg, #276e74 0%, #33888e 100%);
+}
+
+/* Forms use a darker background with subtle transparency */
+form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 24px;
+  background: rgba(40, 40, 40, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 32px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Input fields are styled to be visible but not too bright against the dark background */
+input[type="email"],
+input[type="password"],
+input[type="file"] {
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(30, 30, 30, 0.8);
+  color: white;
+  font-size: 1rem;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #33888e;
+  box-shadow: 0 0 0 2px rgba(51, 136, 142, 0.2);
+}
+
+/* File cards section uses a grid layout with dark, semi-transparent cards */
+.file-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
+  gap: 24px;
   width: 100%;
   padding: 20px;
 }
 
-.file-item {
-  background-color: #404040;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-
-.file-list-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  text-align: center;
-}
-
-h1 {
-  margin-bottom: 20px;
-}
-
-.file-cards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-}
-
 .file-card {
-  background-color: #fff;
-  border-radius: 15px; /* Slightly more rounded corners for a smoother look */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Stronger shadow for a floating effect */
-  padding: 20px;
-  width: 320px; /* Slightly larger width for a more modern look */
-  text-align: left;
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth transition on hover */
-  overflow: hidden; /* Ensures content stays within the bounds of the card */
+  background: rgba(40, 40, 40, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 24px;
+  transition: all 0.3s ease;
 }
 
 .file-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-}
-.file-card p{
-  font-size: 12px;
-  color:#404040 !important
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
+.file-card p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8) !important;
+  margin: 12px 0;
+}
+
+/* Links use the theme's accent color for consistency */
 .file-link {
-  display: inline-block;
-  margin-top: 10px;
-  color: #000000;
+  color: #33888e;
   text-decoration: none;
-  font-weight: bold;
-  transition: color 0.2s;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
-.lower-container{
-  margin-top: 20px;
-}
-
-.link{
-  text-decoration: none;
-  color: skyblue;
-  font-size: 15px;
-}
 .file-link:hover {
+  color: #a8edea;
+}
 
-  color: #0dc8c8;
+/* Headings use a gradient effect that matches the theme */
+h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, #ffffff 0%, #33888e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.link {
+  color: #33888e;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.link:hover {
+  color: #a8edea;
+}
+
+/* Modal for Grant Access */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: rgba(40, 40, 40, 0.9);
+  padding: 24px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  color: white;
+}
+
+.modal-content h3 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #33888e 0%, #a8edea 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.modal-content input {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(30, 30, 30, 0.8);
+  color: white;
+  font-size: 1rem;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.modal-content input:focus {
+  outline: none;
+  border-color: #33888e;
+  box-shadow: 0 0 0 2px rgba(51, 136, 142, 0.2);
+}
+
+.modal-content button {
+  background: linear-gradient(135deg, #33888e 0%, #276e74 100%);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(51, 136, 142, 0.2);
+  margin: 10px;
+}
+
+.modal-content button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(51, 136, 142, 0.3);
+  background: linear-gradient(135deg, #276e74 0%, #33888e 100%);
+}
+
+.modal-content .cancel-btn {
+  background: rgba(255, 0, 0, 0.8);
+  border-radius: 12px;
+}
+
+/* Options dropdown for file */
+.options-dropdown {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background: rgba(40, 40, 40, 0.9);
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.options-dropdown button {
+  background: linear-gradient(135deg, #33888e 0%, #276e74 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.options-dropdown button:hover {
+  background: linear-gradient(135deg, #276e74 0%, #33888e 100%);
+  transform: translateY(-2px);
+}
+
+.options-dropdown button:focus {
+  outline: none;
+}
+
+/* Modal display effect */
+.modal-content {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.file-header{
+  display: flex;
+  justify-content: space-between;
+}
+
+.file-list-container{
+  padding: 70px 0;
 }

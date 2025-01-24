@@ -1,9 +1,9 @@
 import { ethers } from 'ethers';
 const FileRegistryABI = require('./ABI.json'); // Replace with your ABI JSON file
-const contractAddress = '0x0Bc72619B74eE4C3e82E5C02Ec29fC72F8C7627B';
+const contractAddress = '0xA4c97E152526E9f17D04751b39735180A1E8Ad8b';
 
 // Helper function to get contract instance
-const getContractInstance = async () => {
+export const getContractInstance = async () => {
     if (window.ethereum) {
         try {
           // Request account access
@@ -36,15 +36,33 @@ const getContractInstance = async () => {
 export const uploadFileToSmartContract = async (cid, fileName) => {
     try {
         const contract = await getContractInstance();
+
+        // Send the transaction to upload the file
         const tx = await contract.uploadFile(cid, fileName);
+        console.log('Transaction sent:', tx);
+
+        // Listen for the FileUploaded event
+        contract.once('FileUploaded', (fileId, fileName, owner) => {
+            console.log('FileUploaded event:', fileId, fileName, owner);
+            // Capture the fileId from the event
+            const fileIdString = fileId.toString();
+            console.log('Captured File ID:', fileIdString);
+
+            // You can return or save the fileId here
+            return fileIdString;
+        });
+
+        // Wait for the transaction to be mined
         const receipt = await tx.wait();
-        console.log('Transaction successful:', receipt);
-        return receipt;
+        console.log('Transaction mined:', receipt);
     } catch (error) {
         console.error('Error uploading file to smart contract:', error);
         throw new Error('Smart contract upload failed');
     }
 };
+
+
+
 
 // Grant access to a user
 export const grantAccess = async (fileId, walletAddress) => {
@@ -84,13 +102,26 @@ export const hasAccess = async (fileId, userAddress) => {
 };
 
 // Fetch File CID
-export const getFileCID = async (fileId) => {
+export const getFileCIDbyFId = async (fileId) => {
     try {
         const contract = await getContractInstance();
         const cid = await contract.getFileCID(fileId);
+        console.log(cid)
         return cid;
     } catch (error) {
         console.error('Error fetching file CID:', error);
         throw new Error('Failed to fetch file CID');
     }
 };
+// Fetch File CID by File Name
+export const getFileCIDbyName = async (fileName) => {
+    try {
+        const contract = await getContractInstance();
+        const cid = await contract.getFileCID(fileName); // Using the new contract function
+        return cid;
+    } catch (error) {
+        console.error('Error fetching file CID:', error);
+        throw new Error('Failed to fetch file CID');
+    }
+};
+
